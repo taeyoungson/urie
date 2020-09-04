@@ -1,0 +1,13 @@
+results/
+wandb/
+model_plots/
+metrics/
+saved_models/
+
+*.pth
+*.pt
+*.ipynb
+*.png
+*.jpg
+*.csv
+*.txt
