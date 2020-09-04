@@ -8,6 +8,5 @@ saved_models/
 *.pt
 *.ipynb
 *.png
-*.jpg
 *.csv
 *.txt
