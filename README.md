@@ -50,7 +50,7 @@ python srcnn_main.py --batch_size 112 \
                      --seed 5000 \
                      --desc DESCRIPTION \
                      --save SAVE_PATH \
-                     --load_classifier \
+                     --load_classifier \set
                      --dataset ilsvrc \
                      --backbone r50
 ```
@@ -59,7 +59,7 @@ python srcnn_main.py --batch_size 112 \
 You may use our pretrained model to validate or compare the results.
 ```sh
 python inference.py --srcnn_pretrained_path PROJECT_PATH/ECCV_MODELS/ECCV_SKUNET_OURS.ckpt.pt \
-                    --dataset DATASET\
+                    --dataset DATASET \
                     --test_batch_size 32 \
                     --enhancer ours \
                     --recog r50
