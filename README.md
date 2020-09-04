@@ -13,9 +13,7 @@ pip install -r requirements.txt
 
 ## Datasets
 You need to manually configure following environment variables to run the experiments.
-
 All validation csv contains fixed combination of image, corruption and severity to guarantee the same result.
-
 To conduct validation, you may need to change home folder path in each csv files given.
 ```
 # DATA PATHS
