@@ -57,12 +57,27 @@ python srcnn_main.py --batch_size 112 \
 
 ## Validation
 You may use our pretrained model to validate or compare the results.
+
+### Classification
 ```sh
 python inference.py --srcnn_pretrained_path PROJECT_PATH/ECCV_MODELS/ECCV_SKUNET_OURS.ckpt.pt \
                     --dataset DATASET \
                     --test_batch_size 32 \
                     --enhancer ours \
                     --recog r50
+```
+
+### Detection
+We have conducted object detection experiments using the codes from [github](https://github.com/amdegroot/ssd.pytorch).  
+You may compare the performance with the same evaluation code with attaching our model (or yours) in front of the detection model.  
+> For valid comparison, you need to preprocess your data with mean and standard deviation.
+
+### Semantic Segmentation
+We have conducted semantic segmentation experiments using the codes from [github](https://github.com/kazuto1011/deeplab-pytorch).  
+For backbone segmentation network, please you pretrained [deeplabv3](https://pytorch.org/docs/stable/torchvision/models.html) on pytorch.
+You may compare the performance with the same evaluation code with attaching our model (or yours) in front of the segmentation model.  
+> For valid comparison, you need to preprocess your data with mean and standard deviation.
+
 ```
 
 ## BibTeX
