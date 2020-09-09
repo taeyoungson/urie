@@ -78,7 +78,6 @@ For backbone segmentation network, please you pretrained [deeplabv3](https://pyt
 You may compare the performance with the same evaluation code with attaching our model (or yours) in front of the segmentation model.  
 > For valid comparison, you need to preprocess your data with mean and standard deviation.
 
-```
 
 ## BibTeX
 If you use this code for your research, please consider citing:
