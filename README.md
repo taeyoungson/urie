@@ -50,7 +50,7 @@ python srcnn_main.py --batch_size 112 \
                      --seed 5000 \
                      --desc DESCRIPTION \
                      --save SAVE_PATH \
-                     --load_classifier \set
+                     --load_classifier \
                      --dataset ilsvrc \
                      --backbone r50
 ```
