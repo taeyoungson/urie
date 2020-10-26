@@ -315,7 +315,7 @@ def frost(x, severity=1):
          (0.65, 0.7),
          (0.6, 0.75)][severity - 1]
     idx = np.random.randint(5)
-    filename = ['./../frost1.png', './../frost2.png', './../frost3.png', './../frost4.jpg', './../frost5.jpg', './../frost6.jpg'][idx]
+    filename = ['./imagenet_dataset/frost1.png', './imagenet_dataset/frost2.png', './imagenet_dataset/frost3.png', './imagenet_dataset/frost4.jpg', './imagenet_dataset/frost5.jpg', './imagenet_dataset/frost6.jpg'][idx]
     frost = cv2.imread(filename)
 
     # # randomly crop and convert to rgb

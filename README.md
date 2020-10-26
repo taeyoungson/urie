@@ -83,7 +83,7 @@ If you want just simple before & output image comparison, you can use render.py 
 ```sh
 python render.py IMAGE_FILE_PATH
 ```
-![Comparison](./image/output.jpg)
+![Comparison](./image/output.jpg)  
 It runs given image file through pretrained URIE model, and saves enhanced output image comparison in current project file as "output.jpg".  
 You can use this code as your custom visualization skeleton code.  
 
