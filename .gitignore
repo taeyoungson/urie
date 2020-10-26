@@ -6,5 +6,4 @@ saved_models/
 
 *.pth
 *.ipynb
-*.png
-*.csv
+

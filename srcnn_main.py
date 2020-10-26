@@ -10,7 +10,6 @@ import torch.optim as optim
 
 from tqdm import tqdm
 from torch.utils.data import DataLoader
-from srcnn_model import SRCNN
 
 from datasets.corruption_dataset import load_cub
 from imagenet_dataset.imagenet_loader import load_imagenet

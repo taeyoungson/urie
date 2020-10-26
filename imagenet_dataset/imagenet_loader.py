@@ -160,7 +160,7 @@ class IMAGENET_DATASET(data.Dataset):
 
     def _load_images(self):
         for row in self._read_csv():
-            imagepath = row[0]
+            imagepath = os.path.join(self.imagenet_root, row[0])
             label = int(row[1])
 
             self.images.append((imagepath, label))
