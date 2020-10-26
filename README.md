@@ -78,6 +78,15 @@ For backbone segmentation network, please you pretrained [deeplabv3](https://pyt
 You may compare the performance with the same evaluation code with attaching our model (or yours) in front of the segmentation model.  
 > For valid comparison, you need to preprocess your data with mean and standard deviation.
 
+### Image Comparison
+If you want just simple before & output image comparison, you can use render.py as following command.  
+```sh
+python render.py IMAGE_FILE_PATH
+```
+![Comparison](./image/output.jpg)
+It runs given image file through pretrained URIE model, and saves enhanced output image comparison in current project file as "output.jpg".  
+You can use this code as your custom visualization skeleton code.  
+
 
 ## BibTeX
 If you use this code for your research, please consider citing:
