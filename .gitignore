@@ -4,6 +4,6 @@ model_plots/
 metrics/
 saved_models/
 
-*.pth
 *.ipynb
 
+!./base_models/

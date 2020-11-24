@@ -118,10 +118,10 @@ if opt.load_classifier and opt.dataset.lower() == "cub":
     print(f"Using classifier trained on CUB")
 
     if opt.backbone.lower() == "r18":
-        pretrained_weights = torch.load("./saved_models/base_models/resnet18_on_clean.ckpt.pt")
+        pretrained_weights = torch.load("./base_models/resnet18_on_clean.ckpt.pt")
         classifier.fc = nn.Linear(512, 200)
     elif opt.backbone.lower() == "r50":
-        pretrained_weights = torch.load("./saved_models/base_models/resnet50_on_clean.ckpt.pt")
+        pretrained_weights = torch.load("./base_models/resnet50_on_clean.ckpt.pt")
         classifier.fc = nn.Linear(2048, 200)
     classifier.load_state_dict(pretrained_weights, strict=True)
 else:
