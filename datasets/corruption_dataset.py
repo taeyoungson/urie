@@ -27,7 +27,7 @@ class DynamicCUB(data.Dataset):
         self.tsfrmMode = kwargs["tsfrmMode"]
         self.verbose = kwargs["verbose"] if "verbose" in kwargs.keys() else False
         self.mixed_threshold = kwargs["threshold"] if "threshold" in kwargs.keys() else 0.5
-        self.ten_crop_eval = kwargs["ten_crop_eval"] if "ten_crop_eval" in kwargs.keys() else True
+        self.ten_crop_eval = kwargs["ten_crop_eval"] if "ten_crop_eval" in kwargs.keys() else False
         self.current_crp = None
         self.current_tsfrm = None
 
@@ -51,9 +51,10 @@ class DynamicCUB(data.Dataset):
 
     def __getitem__(self, idx):
         imagepath, label = self.images[idx]
-        distorted_image_path = imagepath.replace(self.image_path, self.distorted_image_path)
+        # distorted_image_path = imagepath.replace(self.image_path, self.distorted_image_path)
         bbox = self.bboxes[idx]
 
+        # print(f"loading from {imagepath}, with bbox {bbox}")
         image = open_image(imagepath)
         image = crop_to_bounding_box(image, bbox)
 
@@ -69,9 +70,9 @@ class DynamicCUB(data.Dataset):
                     image, output_size=(227, 227))
 
                 if crp_idx != 15:
-                    distorted_image_path = distorted_image_path.split("/")
-                    distorted_image_path = Path("/".join(distorted_image_path[:4]))/ Path(crp_func) / Path(str(sev)) / "/".join(distorted_image_path[4:])
-
+                    # distorted_image_path = distorted_image_path.split("/")
+                    distorted_image_path = Path(self.distorted_image_path)/ Path(crp_func) / Path(str(sev)) / "/".join(imagepath.split("/")[-2:])
+                    # print(f"loading from {distorted_image_path}, with bbox {bbox}")
                     distorted_image = open_image(distorted_image_path)
                     distorted_image = crop_to_bounding_box(distorted_image, bbox)
                     distorted_image = self.current_tsfrm(distorted_image)
@@ -93,6 +94,7 @@ class DynamicCUB(data.Dataset):
                 return distorted, clean, label, crp_idx
 
             else:
+                # validation
                 image = self.current_tsfrm(image)
                 crp = imagepath.split("/")[4]
 
@@ -171,23 +173,14 @@ class DynamicCUB(data.Dataset):
         if self.tsfrmMode == "train" or self.crpMode == "clean":
             for row in self._read_csv():
                 imagepath = os.path.join(self.image_path, row[0])
-                label = int(row[5])
-
-                # FIXME automate exclusive training
-                # Uncomment following 2 lines to test about 0 - 99 --> 100 - 199
-                # if label > 99:
-                    # continue
+                label = int(row[5]) - 1
 
                 self.images.append((imagepath, label))
                 self.bboxes.append((int(row[1]), int(row[2]), int(row[3]), int(row[4])))
         else:
             for row in self._read_csv():
                 imagepath = row[0]
-                label = int(row[2])
-
-                # Uncomment following 2 lines to test about 0 - 99 --> 100 - 199
-                # if label < 100:
-                    # continue
+                label = int(row[2]) - 1
 
                 self.images.append((imagepath, label))
                 self.bboxes.append(eval(row[1]))
@@ -200,7 +193,7 @@ class DynamicCUB(data.Dataset):
         else:
             label_path = os.environ.get(f"CUB_TNG_{self.crpMode.upper()}_VAL")
 
-        print(f"loading form {label_path}")
+        # print(f"loading form {label_path}")
         with open(label_path) as csv_file:
             csv_file_rows = csv.reader(csv_file, delimiter=",")
             for row in csv_file_rows:

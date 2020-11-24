@@ -39,11 +39,13 @@ parser.add_argument("--residual", action="store_true")
 parser.add_argument("--classifier_tuning", action="store_true")
 parser.add_argument("--load_srcnn", type=str, default=None)
 parser.add_argument("--load_classifier", action="store_true")
+parser.add_argument("--multi", action="store_true")
 parser.add_argument("--weight_decay", type=float, default=1e-3)
-parser.add_argument("--dataset", type=str, required=True, choices=["ilsvrc"])
+parser.add_argument("--dataset", type=str, required=True, choices=["ilsvrc", "cub"])
 parser.add_argument("--backbone", type=str, choices=["r18", "r50"])
 
 parser.set_defaults(tanh=False)
+parser.set_defaults(multi=False)
 parser.set_defaults(e2e=False)
 parser.set_defaults(residual=False)
 parser.set_defaults(classifier_tuning=False)
@@ -53,7 +55,7 @@ opt = parser.parse_args()
 torch.manual_seed(opt.seed)
 torch.cuda.manual_seed(opt.seed)
 
-if opt.dataset == "ilsvrc":
+if opt.dataset.lower() == "ilsvrc":
     tng_dataloader = data.DataLoader(
         load_imagenet(crpMode="train", tsfrmMode="train"),
         batch_size=opt.batch_size,
@@ -71,17 +73,34 @@ if opt.dataset == "ilsvrc":
         pin_memory=True,
         drop_last=False,
     )
-    criterion = nn.CrossEntropyLoss().cuda()
+elif opt.dataset.lower() == "cub":
+    tng_dataloader = data.DataLoader(
+        load_cub(crpMode="train", tsfrmMode="train"),
+        batch_size=opt.batch_size,
+        shuffle=True,
+        num_workers=36,
+        pin_memory=True,
+        drop_last=False,
+    )
+
+    val_dataloader = data.DataLoader(
+        load_cub(crpMode="train", tsfrmMode="eval"),
+        batch_size=opt.test_batch_size,
+        shuffle=False,
+        num_workers=36,
+        pin_memory=True,
+        drop_last=False,
+    )
 else:
     raise NotImplementedError
 
+criterion = nn.CrossEntropyLoss().cuda()
 print(f"tng_dataloader load complete with ({len(tng_dataloader)}/{len(tng_dataloader.dataset)})")
 print(f"val_dataloader load complete with ({len(val_dataloader)}/{len(val_dataloader.dataset)})")
 
 criterion = criterion.cuda()
 
 srcnn = SKUNet()
-srcnn = nn.DataParallel(srcnn)
 srcnn.cuda()
 
 if opt.backbone.lower() == "r18":
@@ -95,10 +114,20 @@ else:
 
 # lets fix classifier!
 
-if opt.load_classifier:
+if opt.load_classifier and opt.dataset.lower() == "cub":
+    print(f"Using classifier trained on CUB")
+
+    if opt.backbone.lower() == "r18":
+        pretrained_weights = torch.load("./saved_models/base_models/resnet18_on_clean.ckpt.pt")
+        classifier.fc = nn.Linear(512, 200)
+    elif opt.backbone.lower() == "r50":
+        pretrained_weights = torch.load("./saved_models/base_models/resnet50_on_clean.ckpt.pt")
+        classifier.fc = nn.Linear(2048, 200)
+    classifier.load_state_dict(pretrained_weights, strict=True)
+else:
     # ilsvrc2012 training
     print(f"Using classifier trained on ILSVRC2012")
-    classifier.eval()
+
 
 
 
@@ -109,8 +138,11 @@ print("...training enhancement layer only")
 optimizer = optim.Adam(srcnn.parameters(), lr=opt.lr, weight_decay=opt.weight_decay)
 
 lr_scheduler = optim.lr_scheduler.StepLR(optimizer, 10)
-classifier = nn.DataParallel(classifier)
-classifier.cuda()
+classifier.eval().cuda()
+
+if opt.multi:
+    classifier = nn.DataParallel(classifier)
+    srcnn = nn.DataParallel(srcnn)
 
 import time
 
@@ -134,9 +166,6 @@ def train(epoch):
 
         clf_loss = criterion(clf_pred, label)
 
-        if iteration % 1000 == 0:
-            plot_images_to_wandb([input[0], model_out[0], residual[0], target[0]], "Comparison")
-
         hit += count_match(clf_pred, label)
         mse_loss = nn.MSELoss()(model_out, target)
 
@@ -150,15 +179,17 @@ def train(epoch):
 
         print("===> Epoch[{}]({}/{}): clf_loss : {:.4f}, iter: {:.3f}"
               .format(epoch, iteration, len(tng_dataloader), clf_loss.item(), time.time() - start))
-        wandb.log({"iteration_loss": clf_loss.item()})
+        # wandb.log({"iteration_loss": clf_loss.item()})
 
     print("===> Epoch {} Complete: Avg. Loss: {:.4f}".format(epoch, epoch_loss / len(tng_dataloader)))
+
+    plot_images_to_wandb([input[0], model_out[0], residual[0], target[0]], "Comparison", step=epoch)
     wandb.log({
         "train_acc": hit / len(tng_dataloader.dataset),
         "clf_loss": clf_total / len(tng_dataloader),
         "mse_loss": mse_total / len(tng_dataloader),
         "total_loss": epoch_loss / len(tng_dataloader),
-    })
+    }, step=epoch)
     lr_scheduler.step()
 
 def validate(epoch):
@@ -185,7 +216,7 @@ def validate(epoch):
             val_loss += loss.item()
             acc += hit
 
-    wandb.log({"val_loss": val_loss / len(val_dataloader), "acc": acc / len(val_dataloader.dataset)})
+    wandb.log({"val_loss": val_loss / len(val_dataloader), "acc": acc / len(val_dataloader.dataset)}, step=epoch)
     return acc / len(val_dataloader.dataset)
 
 
@@ -290,7 +321,7 @@ def generate_metrics(srcnn, classifier, test_batch_size, name, dataset):
     with open(f"saved_models/{name}/best_acc.json", "w") as fp:
         json.dump(result_dict, fp)
 
-wandb.init(project="eccv2020", name=opt.desc, config=opt)
+wandb.init(project="urie-extension", name=opt.desc, config=opt)
 wandb.watch(srcnn)
 
 acc = 0.

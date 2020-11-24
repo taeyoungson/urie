@@ -40,9 +40,9 @@ export CUB_TNG_TEST_VAL=PROJECT_PATH/datasets/eval_set/val_tsfrm_validation.csv
 ```
 
 ## Training
-Training URIE with the proposed method
+Training URIE with the proposed method on ILSVRC2012 dataset
 ```sh
-python srcnn_main.py --batch_size 112 \
+python train_urie.py --batch_size 112 \
                      --cuda \
                      --test_batch_size 48 \
                      --epochs 30 \
@@ -52,7 +52,23 @@ python srcnn_main.py --batch_size 112 \
                      --save SAVE_PATH \
                      --load_classifier \
                      --dataset ilsvrc \
-                     --backbone r50
+                     --backbone r50 \
+                     --multi
+```
+Since training on ILSVRC dataset takes too long, you can train / test the model with cub dataset with folowing command.  
+```sh
+python train_urie.py --batch_size 112 \
+                     --cuda \
+                     --test_batch_size 48 \
+                     --epochs 30 \
+                     --lr 0.0001 \
+                     --seed 5000 \
+                     --desc DESCRIPTION \
+                     --save SAVE_PATH \
+                     --load_classifier \
+                     --dataset cub \
+                     --backbone r50 \
+                     --multi
 ```
 
 ## Validation

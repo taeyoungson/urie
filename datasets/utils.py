@@ -18,7 +18,6 @@ def open_image(imagepath):
 
     im = Image.open(imagepath, "r")
     im = im.convert("RGB")
-    im = im.resize((256, 256))
     return im
 
 

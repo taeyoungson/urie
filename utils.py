@@ -132,7 +132,7 @@ def ConvertColor_YCbCr2RGB(image):
     return image
 
 
-def plot_images_to_wandb(images: list, name: str):
+def plot_images_to_wandb(images: list, name: str, step=None):
     # images are should be list of RGB images tensors in shape (C, H, W)
     images = vutils.make_grid(images, normalize=True, range=(-2.11785, 2.64005))
 
@@ -142,7 +142,7 @@ def plot_images_to_wandb(images: list, name: str):
 
     images = wandb.Image(images, caption=name)
 
-    wandb.log({name: images})
+    wandb.log({name: images}, step=step)
 
 def plot_network(model, name):
     from torchviz import make_dot

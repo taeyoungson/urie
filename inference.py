@@ -31,7 +31,7 @@ def validate(srcnn, classifier, dataloader, mode="cub", vis=False):
                 else:
                     image, label = batch
                 image = image.cuda()
-                label = label.cuda() - 1
+                label = label.cuda()
 
                 output = srcnn(image)
 
@@ -102,7 +102,7 @@ def validate(srcnn, classifier, dataloader, mode="cub", vis=False):
 def main(args=None):
     if args.dataset == "cub":
         cln_dataloader = data.DataLoader(
-            load_cub(crpMode="clean", tsfrmMode="eval", ten_crop_eval=False),
+            load_cub(crpMode="clean", tsfrmMode="eval"),
             batch_size=args.test_batch_size,
             shuffle=False,
             num_workers=32,
@@ -111,7 +111,7 @@ def main(args=None):
         )
 
         tng_dataloader = data.DataLoader(
-            load_cub(crpMode="train", tsfrmMode="eval", ten_crop_eval=False),
+            load_cub(crpMode="train", tsfrmMode="eval"),
             batch_size=args.test_batch_size,
             shuffle=False,
             num_workers=32,
@@ -120,7 +120,7 @@ def main(args=None):
         )
 
         val_dataloader = data.DataLoader(
-            load_cub(crpMode="test", tsfrmMode="eval", ten_crop_eval=False),
+            load_cub(crpMode="test", tsfrmMode="eval"),
             batch_size=args.test_batch_size,
             shuffle=False,
             num_workers=32,

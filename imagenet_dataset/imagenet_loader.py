@@ -48,7 +48,7 @@ class IMAGENET_DATASET(data.Dataset):
 
     def __len__(self):
         # for debug
-        # return 112
+        # return 20
 
         return len(self.images)
 
@@ -78,9 +78,10 @@ class IMAGENET_DATASET(data.Dataset):
                 # if not clean image
                 crp_func = corruptions[crp_func]
                 distorted_image = open_image(imagepath)
+                distorted_image = distorted_image.resize((256, 256))
                 distorted_image = crp_func(distorted_image, sev)
                 distorted_image = restore_image_from_numpy(distorted_image)
-                distorted_image = self.current_tsfrm(distorted_image)
+                # distorted_image = self.current_tsfrm(distorted_image)
 
             else:
                 # return clean image
