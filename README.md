@@ -55,7 +55,7 @@ python train_urie.py --batch_size BATCH_SIZE \
                      --backbone r50 \
                      --multi
 ```
-Since training on ILSVRC dataset takes too long, you can train / test the model with cub dataset with folowing command.  
+Since training on ILSVRC dataset takes too long, you can train / test the model with cub dataset with following command.  
 ```sh
 python train_urie.py --batch_size BATCH_SIZE \
                      --cuda \
