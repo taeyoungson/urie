@@ -33,8 +33,8 @@ export IMAGENET_VAL_VAL_CSV=PROJECT_PATH/imagenet_dataset/imagenet_val_tsfrm_val
 ## CUB VALIDATION
 export CUB_IMAGE=PATH_TO_CUB
 export DISTORTED_CUB_IMAGE=PATH_TO_CUB_C
-export CUB_TNG_LABEL=PATH_TO_CUB_TRAIN_LABEL
-export CUB_VAL_LABEL=PATH_TO_CUB_VALIATION_LABEL
+export CUB_TNG_LABEL=PROJECT_PATH/datasets/eval_set/label_train_cub200_2011.csv
+export CUB_VAL_LABEL=PROJECT_PATH/datasets/eval_set/label_val_cub200_2011.csv
 export CUB_TNG_TRAIN_VAL=PROJECT_PATH/datasets/eval_set/tng_tsfrm_validation.csv
 export CUB_TNG_TEST_VAL=PROJECT_PATH/datasets/eval_set/val_tsfrm_validation.csv
 ```
