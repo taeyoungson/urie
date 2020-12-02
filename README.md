@@ -39,6 +39,14 @@ export CUB_TNG_TRAIN_VAL=PROJECT_PATH/datasets/eval_set/tng_tsfrm_validation.csv
 export CUB_TNG_TEST_VAL=PROJECT_PATH/datasets/eval_set/val_tsfrm_validation.csv
 ```
 
+### ILSVRC2012 Dataset
+
+You can download the dataset from [here](http://image-net.org/challenges/LSVRC/2012/) and use it for training.
+
+### CUB dataset
+
+You can download the original CUB200_2011 dataset from [here](http://www.vision.caltech.edu/visipedia/CUB-200-2011.html), and corrupted version of CUB dataset from [here](https://postechackr-my.sharepoint.com/:u:/g/personal/postekian_postech_ac_kr/EayI2FO8LT1PgFipwuUmLjsB3SEw585Nw9HcxUMO438LbA?e=j990QH).
+
 ## Training
 Training URIE with the proposed method on ILSVRC2012 dataset
 ```sh
