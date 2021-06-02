@@ -61,7 +61,7 @@ torchvision==0.4.2
 tornado==6.0.3
 tqdm==4.42.1
 traitlets==4.3.3
-urllib3==1.25.8
+urllib3==1.26.5
 Wand==0.5.9
 wandb==0.8.27
 watchdog==0.10.2
